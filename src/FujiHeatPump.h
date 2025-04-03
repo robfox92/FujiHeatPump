@@ -87,8 +87,8 @@ class FujiHeatPump
     FujiFrame       updateState;
     FujiFrame       currentState;
 
-    FujiFrame       lastReceivedStates[5];
-    unsigned long   lastReceivedTimes[5];
+    FujiFrame       lastObservedStates[5];
+    unsigned long   lastObservedTimes[5];
 
     FujiFrame decodeFrame();
     void encodeFrame(FujiFrame ff);
@@ -125,8 +125,8 @@ class FujiHeatPump
     
     FujiFrame *getCurrentState();
     FujiFrame *getUpdateState();
-    FujiFrame *getLastReceivedState(byte id);
-    unsigned long getLastReceivedTime(byte id);
+    FujiFrame *getLastObservedState(byte id);
+    unsigned long getLastObservedTime(byte id);
     byte getUpdateFields();
     
     bool debugPrint = false;

@@ -137,6 +137,10 @@ void FujiHeatPump::sendPendingFrame() {
         pendingFrame = false;
         updateFields = 0;
 
+        byte i = fujiAddrToIndex(controllerAddress);
+        memcpy(&lastReceivedStates[i], writeBuf, sizeof(FujiFrame));
+        lastReceivedTimes[i] = millis();
+
         _serial->readBytes(writeBuf, 8); // read back our own frame so we dont process it again
     }
 }
