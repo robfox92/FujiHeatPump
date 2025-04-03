@@ -169,7 +169,7 @@ bool FujiHeatPump::waitForFrame() {
         if(ff.messageType == static_cast<byte>(FujiMessageType::STATUS))
         {
             // index for our lastReceivedStates/lastReceivedTimes array
-            byte i = fujiAddrToIndex(ff.messageDest);
+            byte i = fujiAddrToIndex(ff.messageSource);
             memcpy(&lastReceivedStates[i], &ff, sizeof(FujiFrame));
             lastReceivedTimes[i] = millis();
 
