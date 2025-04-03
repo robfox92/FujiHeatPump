@@ -1,5 +1,6 @@
 #include <HardwareSerial.h>
 #include <Arduino.h>
+#include <string>
 
 
 const byte kModeIndex = 3;
@@ -92,6 +93,7 @@ class FujiHeatPump
     FujiFrame decodeFrame();
     void encodeFrame(FujiFrame ff);
     void printFrame(byte buf[8], FujiFrame ff);
+    void printFrameFriendly(byte buf[8], FujiFrame ff);
     byte fujiAddrToIndex(byte fa);
     
     bool pendingFrame = false;
@@ -169,3 +171,8 @@ const byte kFanModeUpdateMask     = 0b00010000;
 const byte kEconomyModeUpdateMask = 0b00001000;
 const byte kSwingModeUpdateMask   = 0b00000100;
 const byte kSwingStepUpdateMask   = 0b00000010;
+
+const std::string ToString(const FujiMode fm);
+const std::string ToString(const FujiMessageType fmt);
+const std::string ToString(const FujiAddress fa);
+const std::string ToString(const FujiFanMode ffm);

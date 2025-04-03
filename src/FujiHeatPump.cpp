@@ -120,6 +120,16 @@ void FujiHeatPump::printFrame(byte buf[8], FujiFrame ff) {
 
 }
 
+void FujiHeatPump::printFrameFriendly(byte buf[8], FujiFrame ff) {
+    Serial.printf("%02X %02X %02X %02X %02X %02X %02X %02X  ", buf[0], buf[1], buf[2], buf[3], buf[4], buf[5], buf[6], buf[7]);
+
+    Serial.printf(" %2d ==> %2d: %s write: %d login: %d unknown: %d onOff: %d temp: %2d, mode: %d cP:%d uM:%2d cTemp:%2d acError:%d \n",
+                ToString(static_cast<FujiAddress>(ff.messageSource)), 
+                ToString(static_cast<FujiAddress>(ff.messageDest)),
+                ToString(static_cast<FujiMessageType>(ff.messageType)), ff.writeBit, ff.loginBit, ff.unknownBit, ff.onOff, ff.temperature, ff.acMode, ff.controllerPresent, ff.updateMagic, ff.controllerTemp, ff.acError);
+  
+  }
+
 void FujiHeatPump::sendPendingFrame() {
     if(pendingFrame && (millis() - lastFrameReceived) > 50) {
         _serial->write(writeBuf, 8);
@@ -152,7 +162,7 @@ bool FujiHeatPump::waitForFrame() {
 
         if(debugPrint) {
             Serial.printf("<-- ");
-            printFrame(readBuf, ff);
+            printFrameFriendly(readBuf, ff);
         }
         
         // Store the last message we received
@@ -289,7 +299,7 @@ bool FujiHeatPump::waitForFrame() {
 
             if(debugPrint) {
                 Serial.printf("--> ");
-                printFrame(writeBuf, ff);
+                printFrameFriendly(writeBuf, ff);
             }
 
             for(int i=0;i<8;i++) {
@@ -404,3 +414,73 @@ byte FujiHeatPump::getUpdateFields(){
 }
  
 
+const std::string ToString(const FujiMode fm)
+{
+    switch (fm)
+    {
+        case FujiMode::UNKNOWN:
+            return "UNKNOWN";
+        case FujiMode::FAN:
+            return "FAN";
+        case FujiMode::DRY:
+            return "DRY";
+        case FujiMode::COOL:
+            return "COOL";
+        case FujiMode::HEAT:
+            return "HEAT";
+        case FujiMode::AUTO:
+            return "AUTO";
+        default:
+            return "invalid";
+    }
+}
+const std::string ToString(const FujiMessageType fmt)
+{
+    switch (fmt)
+    {
+        case FujiMessageType::STATUS:
+            return "STATUS";
+        case FujiMessageType::ERROR:
+            return "ERROR";
+        case FujiMessageType::LOGIN:
+            return "LOGIN";
+        case FujiMessageType::UNKNOWN:
+            return "UNKNOWN";
+        default:
+            return "invalid";
+    }
+}
+const std::string ToString(const FujiAddress fa)
+{
+    switch (fa)
+    {
+        case FujiAddress::START:
+            return "START";
+        case FujiAddress::UNIT:
+            return "UNIT";
+        case FujiAddress::PRIMARY:
+            return "PRIMARY";
+        case FujiAddress::SECONDARY:
+            return "SECONDARY";
+        default:
+            return "invalid";
+    }
+}
+const std::string ToString(const FujiFanMode ffm)
+{
+    switch (ffm)
+    {
+        case FujiFanMode::FAN_AUTO:
+            return "FAN_AUTO";
+        case FujiFanMode::FAN_QUIET:
+            return "FAN_QUIET";
+        case FujiFanMode::FAN_LOW:
+            return "FAN_LOW";
+        case FujiFanMode::FAN_MEDIUM:
+            return "FAN_MEDIUM";
+        case FujiFanMode::FAN_HIGH:
+            return "FAN_HIGH";
+        default:
+            return "invalid";
+    }
+}
