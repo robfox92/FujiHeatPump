@@ -71,11 +71,6 @@ void FujiHeatPump::encodeFrame(FujiFrame ff){
 
 }
 
-byte FujiHeatPump::fujiAddrToIndex(FujiAddress fa)
-{
-    return fujiAddrToIndex(static_cast<byte>(fa));
-}
-
 byte FujiHeatPump::fujiAddrToIndex(byte fa)
 {
     // index for our lastReceived{State,Time} array
@@ -160,6 +155,7 @@ bool FujiHeatPump::waitForFrame() {
             printFrame(readBuf, ff);
         }
         
+        // Store the last message we received
         if(ff.messageType == static_cast<byte>(FujiMessageType::STATUS))
         {
             // index for our lastReceivedStates/lastReceivedTimes array
@@ -390,13 +386,13 @@ FujiFrame *FujiHeatPump::getUpdateState(){
     return &updateState;
 }
 
-FujiFrame *FujiHeatPump::getLastReceivedState(FujiAddress id)
+FujiFrame *FujiHeatPump::getLastReceivedState(byte id)
 {
     byte ix = fujiAddrToIndex(id);
     return &lastReceivedStates[ix];
 }
 
-unsigned long FujiHeatPump::getLastReceivedTime(FujiAddress id)
+unsigned long FujiHeatPump::getLastReceivedTime(byte id)
 {
     byte ix = fujiAddrToIndex(id);
     return lastReceivedTimes[ix];
