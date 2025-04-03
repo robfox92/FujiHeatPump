@@ -92,6 +92,8 @@ class FujiHeatPump
     FujiFrame decodeFrame();
     void encodeFrame(FujiFrame ff);
     void printFrame(byte buf[8], FujiFrame ff);
+    byte fujiAddrToIndex(FujiAddress fa);
+    byte fujiAddrToIndex(byte fa);
     
     bool pendingFrame = false;
   public:
@@ -122,6 +124,8 @@ class FujiHeatPump
     
     FujiFrame *getCurrentState();
     FujiFrame *getUpdateState();
+    FujiFrame *getLastReceivedState(FujiAddress id);
+    unsigned long getLastReceivedTime(FujiAddress id);
     byte getUpdateFields();
     
     bool debugPrint = false;

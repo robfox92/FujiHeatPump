@@ -71,6 +71,25 @@ void FujiHeatPump::encodeFrame(FujiFrame ff){
 
 }
 
+byte FujiHeatPump::fujiAddrToIndex(FujiAddress fa)
+{
+    return fujiAddrToIndex(static_cast<byte>(fa));
+}
+
+byte FujiHeatPump::fujiAddrToIndex(byte fa)
+{
+    // index for our lastReceived{State,Time} array
+    // [0]: Start
+    // [1]: Unit
+    // [2]: Primary
+    // [3]: Secondary
+    // [4]: Unknown - byte was probably invalid, but we may as well store it
+    fa = fa == 32 ? 2 : fa;
+    fa = fa == 33 ? 3 : fa;
+    fa = fa  >  4 ? 4 : fa;
+    return fa;
+}
+
 void FujiHeatPump::connect(HardwareSerial *serial, bool secondary){
     return this->connect(serial, secondary, -1, -1);
 }
@@ -140,19 +159,16 @@ bool FujiHeatPump::waitForFrame() {
             Serial.printf("<-- ");
             printFrame(readBuf, ff);
         }
-
+        
         if(ff.messageType == static_cast<byte>(FujiMessageType::STATUS))
         {
             // index for our lastReceivedStates/lastReceivedTimes array
-            byte i = ff.messageDest;
-            i = i == 32 ? 2 : i;
-            i = i == 33 ? 3 : i;
-            i = i < 4 ? i : 4;
+            byte i = fujiAddrToIndex(ff.messageDest);
             memcpy(&lastReceivedStates[i], &ff, sizeof(FujiFrame));
             lastReceivedTimes[i] = millis();
 
         }
-        
+
         if(ff.messageDest == controllerAddress) {
             lastFrameReceived = millis();
             
@@ -373,6 +389,19 @@ FujiFrame *FujiHeatPump::getCurrentState(){
 FujiFrame *FujiHeatPump::getUpdateState(){
     return &updateState;
 }
+
+FujiFrame *FujiHeatPump::getLastReceivedState(FujiAddress id)
+{
+    byte ix = fujiAddrToIndex(id);
+    return &lastReceivedStates[ix];
+}
+
+unsigned long FujiHeatPump::getLastReceivedTime(FujiAddress id)
+{
+    byte ix = fujiAddrToIndex(id);
+    return lastReceivedTimes[ix];
+}
+
 
 byte FujiHeatPump::getUpdateFields(){
     return updateFields;
