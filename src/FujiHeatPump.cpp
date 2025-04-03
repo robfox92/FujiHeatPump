@@ -140,6 +140,18 @@ bool FujiHeatPump::waitForFrame() {
             Serial.printf("<-- ");
             printFrame(readBuf, ff);
         }
+
+        if(ff.messageType == static_cast<byte>(FujiMessageType::STATUS))
+        {
+            // index for our lastReceivedStates/lastReceivedTimes array
+            byte i = ff.messageDest;
+            i = i == 32 ? 2 : i;
+            i = i == 33 ? 3 : i;
+            i = i < 4 ? i : 4;
+            memcpy(&lastReceivedStates[i], &ff, sizeof(FujiFrame));
+            lastReceivedTimes[i] = millis();
+
+        }
         
         if(ff.messageDest == controllerAddress) {
             lastFrameReceived = millis();

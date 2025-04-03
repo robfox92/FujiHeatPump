@@ -86,6 +86,9 @@ class FujiHeatPump
     FujiFrame       updateState;
     FujiFrame       currentState;
 
+    FujiFrame       lastReceivedStates[5];
+    unsigned long   lastReceivedTimes[5];
+
     FujiFrame decodeFrame();
     void encodeFrame(FujiFrame ff);
     void printFrame(byte buf[8], FujiFrame ff);
