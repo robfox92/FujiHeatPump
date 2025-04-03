@@ -73,7 +73,7 @@ void FujiHeatPump::encodeFrame(FujiFrame ff){
 
 byte FujiHeatPump::fujiAddrToIndex(byte fa)
 {
-    // index for our lastReceived{State,Time} array
+    // index for our lastObserved{State,Time} array
     // [0]: Start
     // [1]: Unit
     // [2]: Primary
@@ -138,8 +138,8 @@ void FujiHeatPump::sendPendingFrame() {
         updateFields = 0;
 
         byte i = fujiAddrToIndex(controllerAddress);
-        memcpy(&lastReceivedStates[i], writeBuf, sizeof(FujiFrame));
-        lastReceivedTimes[i] = millis();
+        memcpy(&lastObservedStates[i], writeBuf, sizeof(FujiFrame));
+        lastObservedTimes[i] = millis();
 
         _serial->readBytes(writeBuf, 8); // read back our own frame so we dont process it again
     }
@@ -172,10 +172,10 @@ bool FujiHeatPump::waitForFrame() {
         // Store the last message we received
         if(ff.messageType == static_cast<byte>(FujiMessageType::STATUS))
         {
-            // index for our lastReceivedStates/lastReceivedTimes array
+            // index for our lastObservedStates/lastObservedTimes array
             byte i = fujiAddrToIndex(ff.messageSource);
-            memcpy(&lastReceivedStates[i], &ff, sizeof(FujiFrame));
-            lastReceivedTimes[i] = millis();
+            memcpy(&lastObservedStates[i], &ff, sizeof(FujiFrame));
+            lastObservedTimes[i] = millis();
 
         }
 
@@ -400,16 +400,16 @@ FujiFrame *FujiHeatPump::getUpdateState(){
     return &updateState;
 }
 
-FujiFrame *FujiHeatPump::getLastReceivedState(byte id)
+FujiFrame *FujiHeatPump::getLastObservedState(byte id)
 {
     byte ix = fujiAddrToIndex(id);
-    return &lastReceivedStates[ix];
+    return &lastObservedStates[ix];
 }
 
-unsigned long FujiHeatPump::getLastReceivedTime(byte id)
+unsigned long FujiHeatPump::getLastObservedTime(byte id)
 {
     byte ix = fujiAddrToIndex(id);
-    return lastReceivedTimes[ix];
+    return lastObservedTimes[ix];
 }
 
 
