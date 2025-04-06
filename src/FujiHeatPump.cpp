@@ -208,7 +208,15 @@ bool FujiHeatPump::waitForFrame() {
                 } else {
                     if(!controllerLoggedIn) {
                         // if this is the first message we have received, announce ourselves to the indoor unit
-                        ff.messageDest       = ff.messageSource;
+                        if (ff.messageSource == static_cast<byte>(FujiAddress::PRIMARY))
+                        {
+                            ff.messageDest       = ff.messageSource;
+                        }
+                        else
+                        {
+                            ff.messageDest = static_cast<byte>(FujiAddress::UNIT);
+                        }
+                        
                         ff.messageSource     = controllerAddress;
                         ff.loginBit          = false;
                         ff.controllerPresent = 0;
