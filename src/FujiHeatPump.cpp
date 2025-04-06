@@ -121,7 +121,7 @@ void FujiHeatPump::printFrame(byte buf[8], FujiFrame ff) {
 }
 
 void FujiHeatPump::printFrameFriendly(byte buf[8], FujiFrame ff) {
-    Serial.printf("%02X %02X %02X %02X %02X %02X %02X %02X  ", buf[0], buf[1], buf[2], buf[3], buf[4], buf[5], buf[6], buf[7]);   
+    Serial.printf("%02X %02X %02X %02X %02X %02X %02X %02X @%3d ", buf[0], buf[1], buf[2], buf[3], buf[4], buf[5], buf[6], buf[7], millis()/1000);   
     std::string src = ToString(static_cast<FujiAddress>(ff.messageSource));
     std::string dst = ToString(static_cast<FujiAddress>(ff.messageDest));
     std::string type = ToString(static_cast<FujiMessageType>(ff.messageType));
@@ -166,7 +166,7 @@ bool FujiHeatPump::waitForFrame() {
         ff = decodeFrame();
 
         if(debugPrint) {
-            Serial.printf("<-- ");
+            Serial.printf("< ");
             printFrameFriendly(readBuf, ff);
         }
         
@@ -314,7 +314,7 @@ bool FujiHeatPump::waitForFrame() {
             encodeFrame(ff);
 
             if(debugPrint) {
-                Serial.printf("--> ");
+                Serial.printf("> ");
                 printFrameFriendly(writeBuf, ff);
             }
 
