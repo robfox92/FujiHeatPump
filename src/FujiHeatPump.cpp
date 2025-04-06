@@ -206,7 +206,7 @@ bool FujiHeatPump::waitForFrame() {
                     ff.messageType       = static_cast<byte>(FujiMessageType::STATUS);
                     
                 } else {
-                    if(controllerIsPrimary) {
+                    if(!controllerLoggedIn) {
                         // if this is the first message we have received, announce ourselves to the indoor unit
                         ff.messageSource     = controllerAddress;
                         ff.messageDest       = static_cast<byte>(FujiAddress::UNIT);
@@ -289,21 +289,25 @@ bool FujiHeatPump::waitForFrame() {
             else if(ff.messageType == static_cast<byte>(FujiMessageType::LOGIN)){
                 // received a login frame OK frame
                 // the primary will send packet to a secondary controller to see if it exists
-                ff.messageSource     = controllerAddress;
-                ff.messageDest       = static_cast<byte>(FujiAddress::SECONDARY);
-                ff.loginBit          = true;
-                ff.controllerPresent = 1;
-                ff.updateMagic       = 0;
-                ff.unknownBit        = true;
-                ff.writeBit          = 0;
+                if (ff.controllerPresent) { controllerLoggedIn = true; }
+                if (controllerIsPrimary)
+                {
+                    ff.messageSource     = controllerAddress;
+                    ff.messageDest       = static_cast<byte>(FujiAddress::SECONDARY);
+                    ff.loginBit          = true;
+                    ff.controllerPresent = 1;
+                    ff.updateMagic       = 0;
+                    ff.unknownBit        = true;
+                    ff.writeBit          = 0;
+                    ff.onOff             = currentState.onOff;
+                    ff.temperature       = currentState.temperature;
+                    ff.acMode            = currentState.acMode;
+                    ff.fanMode           = currentState.fanMode;
+                    ff.swingMode         = currentState.swingMode;
+                    ff.swingStep         = currentState.swingStep;
+                    ff.acError           = currentState.acError;
+                }
                 
-                ff.onOff             = currentState.onOff;
-                ff.temperature       = currentState.temperature;
-                ff.acMode            = currentState.acMode;
-                ff.fanMode           = currentState.fanMode;
-                ff.swingMode         = currentState.swingMode;
-                ff.swingStep         = currentState.swingStep;
-                ff.acError           = currentState.acError;
             } else if(ff.messageType == static_cast<byte>(FujiMessageType::ERROR)) {
                 Serial.printf("AC ERROR RECV: ");
                 printFrame(readBuf, ff);
