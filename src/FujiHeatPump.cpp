@@ -231,20 +231,20 @@ bool FujiHeatPump::waitForFrame() {
                         ff.messageSource     = controllerAddress;
                         ff.messageDest       = static_cast<byte>(FujiAddress::UNIT);
                         // if we've not sent a message yet, forward the frame unaltered
-                        if (!seenSecondaryController)
-                        {
-                            seenSecondaryController = true;
-                        }
-                        // otherwise, do our normal business
-                        else
-                        {
+                        // if (!seenSecondaryController)
+                        // {
+                        //     seenSecondaryController = true;
+                        // }
+                        // // otherwise, do our normal business
+                        // else
+                        // {
                             
                             ff.loginBit          = false;
                             ff.controllerPresent = 1;
                             ff.updateMagic       = 2;
                             ff.unknownBit        = true;
                             ff.writeBit          = 0;
-                        }
+                        // }
                         
                     }
                     
