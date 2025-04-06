@@ -126,7 +126,7 @@ void FujiHeatPump::printFrameFriendly(byte buf[8], FujiFrame ff) {
     std::string dst = ToString(static_cast<FujiAddress>(ff.messageDest));
     std::string type = ToString(static_cast<FujiMessageType>(ff.messageType));
     Serial.printf(" %2s ==> %2s: %s write: %d login: %d unknown: %d onOff: %d temp: %2d, mode: %d cP:%d uM:%2d cTemp:%2d acError:%d \n",
-                src, dst, type, ff.writeBit, ff.loginBit, ff.unknownBit, ff.onOff, ff.temperature, ff.acMode, ff.controllerPresent, ff.updateMagic, ff.controllerTemp, ff.acError);
+                src.c_str(), dst.c_str(), type.c_str(), ff.writeBit, ff.loginBit, ff.unknownBit, ff.onOff, ff.temperature, ff.acMode, ff.controllerPresent, ff.updateMagic, ff.controllerTemp, ff.acError);
   
   }
 
