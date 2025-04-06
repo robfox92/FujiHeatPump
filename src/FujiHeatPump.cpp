@@ -216,7 +216,7 @@ bool FujiHeatPump::waitForFrame() {
                         ff.unknownBit        = true;
                         ff.writeBit          = 0;
                         ff.messageType       = static_cast<byte>(FujiMessageType::LOGIN);
-                        
+                        ff.controllerTemp    = 7;
                         ff.onOff             = 0;
                         ff.temperature       = 0;
                         ff.acMode            = 0;
