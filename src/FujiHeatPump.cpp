@@ -184,7 +184,6 @@ bool FujiHeatPump::waitForFrame() {
             lastFrameReceived = millis();
             
             if(ff.messageType == static_cast<byte>(FujiMessageType::STATUS)){
-
                 if(ff.controllerPresent == 1) {
                     // we have logged into the indoor unit
                     // this is what most frames are
@@ -205,7 +204,10 @@ bool FujiHeatPump::waitForFrame() {
                     ff.writeBit          = 0;
                     ff.messageType       = static_cast<byte>(FujiMessageType::STATUS);
                     
-                } else {
+                } 
+                else {
+                    // wait until a specific frame to log in
+                    if (ff.updateMagic != 10) { return false; }
                     if(controllerIsPrimary) {
                         // if this is the first message we have received, announce ourselves to the indoor unit
                         ff.messageSource     = controllerAddress;
