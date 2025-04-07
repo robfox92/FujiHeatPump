@@ -209,8 +209,6 @@ bool FujiHeatPump::waitForFrame() {
                     
                 } 
                 else {
-                    // wait until a specific frame to log in
-                    if (ff.updateMagic != 10) { return false; }
                     if(controllerIsPrimary) {
                         // if this is the first message we have received, announce ourselves to the indoor unit
                         ff.messageSource     = controllerAddress;
