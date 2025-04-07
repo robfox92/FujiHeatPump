@@ -124,10 +124,13 @@ void FujiHeatPump::printFrameFriendly(byte buf[8], FujiFrame ff) {
     Serial.printf("%02X %02X %02X %02X %02X %02X %02X %02X @%3d  ", buf[0], buf[1], buf[2], buf[3], buf[4], buf[5], buf[6], buf[7], millis()/1000);   
     // Serial.printf(" %9s ==> %9s: %7s, write:%d, login:%d, unk:%d, onOff:%d, temp:%2d, mode:%d, cP:%d, uM:%2d, cTemp:%2d, err:%d \n",
     //             src.c_str(), dst.c_str(), type.c_str(), ff.writeBit, ff.loginBit, ff.unknownBit, ff.onOff, ff.temperature, ff.acMode, ff.controllerPresent, ff.updateMagic, ff.controllerTemp, ff.acError);
+    std::string src = ToString(static_cast<FujiAddress>(ff.messageSource));
+    std::string dst = ToString(static_cast<FujiAddress>(ff.messageDest));
+    std::string typ = ToString(static_cast<FujiMessageType>(ff.messageType));
     Serial.printf("%9s ==> %9s: %7s,wr%d,log%d,unk%d,on%d,tmp%2d,mod%d,cP%d,uM%2d,cTmp%2d,err%d\n",
-                 ToString(static_cast<FujiAddress>(ff.messageSource)).c_str(), 
-                 ToString(static_cast<FujiAddress>(ff.messageDest)).c_str(), 
-                 ToString(static_cast<FujiMessageType>(ff.messageType)).c_str(), 
+                 src.c_str(), 
+                 dst.c_str(), 
+                 typ.c_str(), 
                  ff.writeBit, ff.loginBit, ff.unknownBit, ff.onOff, ff.temperature, ff.acMode, ff.controllerPresent, ff.updateMagic, ff.controllerTemp, ff.acError);
   }
 
