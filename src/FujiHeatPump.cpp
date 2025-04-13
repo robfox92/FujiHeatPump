@@ -333,6 +333,41 @@ bool FujiHeatPump::waitForFrame() {
             seenSecondaryController = true;
             currentState.controllerTemp = ff.controllerTemp; // we dont have a temp sensor, use the temp reading from the secondary controller
         }
+        else if ( (ff.messageDest   == static_cast<byte>(FujiAddress::START)) 
+               && (ff.messageSource == static_cast<byte>(FujiAddress::START))
+               &&  ff.acError)
+        {
+            // it's a broadcast that there's an error.
+            ff.messageSource     = controllerAddress;
+            ff.messageDest       = static_cast<byte>(FujiAddress::UNIT);
+            ff.messageType       = static_cast<byte>(FujiMessageType::ERROR);
+            ff.loginBit          = false;
+            ff.controllerPresent = 0;
+            ff.updateMagic       = 0;
+            ff.unknownBit        = true;
+            ff.writeBit          = 0;
+            
+            ff.onOff             = 0;
+            ff.temperature       = 0;
+            ff.acMode            = 0;
+            ff.fanMode           = 0;
+            ff.swingMode         = 0;
+            ff.swingStep         = 0;
+            ff.acError           = 1;
+            
+            // encodeFrame(ff);
+
+            // if(debugPrint) {
+            //     printFrameFriendly(writeBuf, ff);
+            // }
+
+            // for(int i=0;i<8;i++) {
+            //     writeBuf[i] ^= 0xFF;
+            // }
+                    
+            // pendingFrame = true;
+
+        }
         
         return true;
     }
