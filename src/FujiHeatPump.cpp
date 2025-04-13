@@ -121,6 +121,9 @@ void FujiHeatPump::printFrame(byte buf[8], FujiFrame ff) {
 }
 
 void FujiHeatPump::printFrameFriendly(byte buf[8], FujiFrame ff) {
+    if (ff.messageSource == this->controllerAddress)    { Serial.printf("<< ");}
+    else if (ff.messageDest == this->controllerAddress) { Serial.printf(">> ");}
+    else { Serial.printf("-- "); }
     Serial.printf("%02X %02X %02X %02X %02X %02X %02X %02X @%3d  ", buf[0], buf[1], buf[2], buf[3], buf[4], buf[5], buf[6], buf[7], millis()/1000);   
     // Serial.printf(" %9s ==> %9s: %7s, write:%d, login:%d, unk:%d, onOff:%d, temp:%2d, mode:%d, cP:%d, uM:%2d, cTemp:%2d, err:%d \n",
     //             src.c_str(), dst.c_str(), type.c_str(), ff.writeBit, ff.loginBit, ff.unknownBit, ff.onOff, ff.temperature, ff.acMode, ff.controllerPresent, ff.updateMagic, ff.controllerTemp, ff.acError);
@@ -169,7 +172,6 @@ bool FujiHeatPump::waitForFrame() {
         ff = decodeFrame();
 
         if(debugPrint) {
-            Serial.printf("< ");
             printFrameFriendly(readBuf, ff);
         }
         
@@ -317,7 +319,6 @@ bool FujiHeatPump::waitForFrame() {
             encodeFrame(ff);
 
             if(debugPrint) {
-                Serial.printf("> ");
                 printFrameFriendly(writeBuf, ff);
             }
 
