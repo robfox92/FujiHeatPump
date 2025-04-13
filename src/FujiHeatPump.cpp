@@ -355,6 +355,7 @@ bool FujiHeatPump::waitForFrame() {
             ff.swingStep         = 0;
             ff.acError           = 1;
             
+            // TODO: uncomment this if we want to actually query the controller.
             // encodeFrame(ff);
 
             // if(debugPrint) {
